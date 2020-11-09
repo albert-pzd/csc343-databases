@@ -26,7 +26,16 @@ SELECT n FROM q5_parameters;
 
 -- HINT: You can answer the question by writing one recursive query below, without any more views.
 -- Your query that answers the question goes below the "insert into" line:
-INSERT INTO q5
+INSERT INTO q5 (with RECURSIVE ds(s_arv, inbound, num_flights, n) as 
+	(select flight.s_arv, flight.inbound, 1 as num_flights, q5_parameters.n 
+		from air_travel.flight, air_travel.q5_parameters 
+		where date_trunc('day', flight.s_dep) = date_trunc('day', q5_parameters.day) 
+		and q5_parameters.n >= 1 and flight.outbound = 'YYZ'
+		 union all select flight.s_arv, flight.inbound, (ds.num_flights + 1) as num_flights, ds.n 
+		 from ds, air_travel.flight 
+		 where flight.s_dep >= ds.s_arv and ds.inbound = flight.outbound 
+		 and (flight.s_dep - ds.s_arv) <= '24:00:00' and (ds.num_flights + 1) <= ds.n) 
+	select inbound as destination, num_flights from ds)
 
 
 

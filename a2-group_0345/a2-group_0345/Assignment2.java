@@ -35,7 +35,7 @@ public class Assignment2 {
    public boolean connectDB(String url, String username, String password) {
        try {
            connection = DriverManager.getConnection(url, username, password);
-           PreparedStatement ps = connection.prepareStatement("SEARCH_PATH TO air_travel, public;"); 
+           PreparedStatement ps = connection.prepareStatement("SET SEARCH_PATH to air_travel, public;"); 
            ps.executeUpdate();
        } catch (Exception e) {
            e.printStackTrace();
@@ -259,16 +259,16 @@ public class Assignment2 {
                int rest = c2 - bc;
                while (nullList.size() > 0 && rest > 0) {
                     int nu = nullList.removeFirst();
-                    String updateSql = "update air_travel.booking set price=?, seat_class=?::air_travel.seat_class, row=?, letter=? where id = ?";
+                    String updateSql = "update air_travel.booking set seat_class=?::air_travel.seat_class, row=?, letter=? where id = ?";
                     PreparedStatement updateStmt = connection.prepareStatement(updateSql);
-                    updateStmt.setInt(1, priceMap.get("business"));
-                    updateStmt.setString(2, "business");
+   
+                    updateStmt.setString(1, "business");
                     int rc = (int)Math.ceil((double)(c2 - rest + 1) / 6);
 
                     String ll = seatLetters.get((c2 - rest) % 6);
-                    updateStmt.setInt(3, rc + rowMap.get("business"));
-                    updateStmt.setString(4, ll);
-                    updateStmt.setInt(5, nu);
+                    updateStmt.setInt(2, rc + rowMap.get("business"));
+                    updateStmt.setString(3, ll);
+                    updateStmt.setInt(4, nu);
                     updateStmt.execute();
 
                     updateStmt.close();
@@ -293,19 +293,19 @@ public class Assignment2 {
                }
                firstStmt.close();
 
-               int rest = c3 - bc;
+               int rest = c1 - bc;
                while (nullList.size() > 0 && rest > 0) {
                    int nu = nullList.removeFirst();
-                   String updateSql = "update air_travel.booking set price=?, seat_class=?::air_travel.seat_class, row=?, letter=? where id = ?";
+                   String updateSql = "update air_travel.booking set seat_class=?::air_travel.seat_class, row=?, letter=? where id = ?";
                    PreparedStatement updateStmt = connection.prepareStatement(updateSql);
-                   updateStmt.setInt(1, priceMap.get("first"));
-                   updateStmt.setString(2, "first");
+
+                   updateStmt.setString(1, "first");
                    int rc = getCeil(Math.ceil((double)(c3 - rest + 1) / 6));
 
                    String ll = seatLetters.get( (c3 - rest) % 6);
-                   updateStmt.setInt(3, rc + rowMap.get("first"));
-                   updateStmt.setString(4, ll);
-                   updateStmt.setInt(5, nu);
+                   updateStmt.setInt(2, rc + rowMap.get("first"));
+                   updateStmt.setString(3, ll);
+                   updateStmt.setInt(4, nu);
                    updateStmt.execute();
 
 
@@ -365,13 +365,27 @@ public class Assignment2 {
       try {
 
           Assignment2 as = new Assignment2();
-          as.connectDB("jdbc:postgresql://127.0.0.1:5432/postgres", "postgres", "postgres");
+          if (as.connectDB("jdbc:postgresql://localhost:5432/csc343h-panzhen2", "panzhen2", "")){
+		System.out.println("success");}
+	  as.bookSeat(1, 5,  "economy");		
           as.bookSeat(1, 10, "economy");
           as.bookSeat(1, 10, "economy");
           as.bookSeat(1, 10, "economy");
           as.bookSeat(1, 10, "economy");
           as.bookSeat(1, 10, "economy");
-          as.upgrade(10);
+	  as.bookSeat(1, 10, "economy");
+	  as.bookSeat(1, 10, "economy");
+	  as.bookSeat(1, 10, "economy");
+	  as.bookSeat(1, 10, "economy");
+	  as.bookSeat(1, 10, "economy");
+	  as.bookSeat(1, 10, "economy");
+          as.bookSeat(1, 10, "economy");
+	  as.bookSeat(1, 10, "economy");
+	  as.bookSeat(1, 10, "economy");
+	  as.bookSeat(1, 10, "economy");
+	  as.bookSeat(2, 3, "economy");
+	  as.bookSeat(1, 5,  "first");
+          as.upgrade(5);
           as.disconnectDB();
 
       } catch (Exception e) {
